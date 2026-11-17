@@ -17,6 +17,10 @@ export class ProductPage {
     this.cartLink = page.getByRole('link', {
       name: 'Shopping cart'
     });
+
+    this.addToCartNotification = this.page.locator(
+  '.bar-notification.success'
+);
   }
 
   async openBooksCategory() {
@@ -28,8 +32,13 @@ export class ProductPage {
   }
 
   async addProductToCart() {
-    await this.addToCartButton.click();
-  }
+  await this.addToCartButton.click();
+
+  await this.addToCartNotification.waitFor({
+    state: 'visible',
+    timeout: 15000
+  });
+}
 
   async openShoppingCart() {
   await this.page.goto('/cart');
