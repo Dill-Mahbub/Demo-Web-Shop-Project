@@ -1,7 +1,8 @@
+
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage.js';
 
-test('Q1 - Verify error message for invalid login', async ({ page }) => {
+test('Q1 - Verify error message for invalid login', async ({ page }, testInfo) => {
 
   const loginPage = new LoginPage(page);
 
@@ -22,5 +23,11 @@ test('Q1 - Verify error message for invalid login', async ({ page }) => {
   // Verify login form is still displayed
   await expect(loginPage.emailInput).toBeVisible();
   await expect(loginPage.passwordInput).toBeVisible();
+
+  // Attach screenshot to Playwright and Allure reports
+  await testInfo.attach('Q1 - Invalid Login Screenshot', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png'
+  });
 
 });

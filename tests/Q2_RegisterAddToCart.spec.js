@@ -1,8 +1,9 @@
+
 import { test, expect } from '@playwright/test';
 import { RegistrationPage } from '../pages/RegistrationPage.js';
 import { ProductPage } from '../pages/ProductPage.js';
 
-test('Q2 - Register a new user and add a product to cart', async ({ page }) => {
+test('Q2 - Register a new user and add a product to cart', async ({ page }, testInfo) => {
 
   const registrationPage = new RegistrationPage(page);
   const productPage = new ProductPage(page);
@@ -53,5 +54,11 @@ test('Q2 - Register a new user and add a product to cart', async ({ page }) => {
 
   // Step 11: Verify product quantity
   await expect(page.locator('.qty-input')).toHaveValue('1');
+
+  // Attach screenshot to Playwright and Allure reports
+  await testInfo.attach('Q2 - Register and Add to Cart Screenshot', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png'
+  });
 
 });

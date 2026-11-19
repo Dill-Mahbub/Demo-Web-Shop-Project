@@ -1,11 +1,14 @@
+
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
 
   fullyParallel: false,
-
+  workers: 1,
   retries: 0,
+
+  timeout: 60000,
 
   reporter: [
     ['list'],
@@ -15,6 +18,8 @@ export default defineConfig({
 
   use: {
     baseURL: 'https://demowebshop.tricentis.com/',
+    navigationTimeout: 60000,
+    actionTimeout: 15000,
     trace: 'on',
     screenshot: 'on',
     video: 'retain-on-failure',

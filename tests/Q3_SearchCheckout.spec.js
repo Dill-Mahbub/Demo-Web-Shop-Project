@@ -1,9 +1,11 @@
+
 import { test, expect } from '@playwright/test';
 import { SearchPage } from '../pages/SearchPage.js';
 import { ProductPage } from '../pages/ProductPage.js';
 import { CheckoutPage } from '../pages/CheckoutPage.js';
 
-test('Q3 - Search product and add to cart', async ({ page }) => {
+test('Q3 - Search product and add to cart', async ({ page }, testInfo) => {
+
   const searchPage = new SearchPage(page);
   const productPage = new ProductPage(page);
   const checkoutPage = new CheckoutPage(page);
@@ -43,59 +45,66 @@ test('Q3 - Search product and add to cart', async ({ page }) => {
   await expect(page.locator('.qty-input'))
     .toHaveValue('2');
 
-    // Step 9: Agree to Terms of Service
-    await productPage.proceedToCheckout();
+  // Step 9: Agree to Terms of Service
+  await productPage.proceedToCheckout();
 
-    // Step 10: Checkout as Guest
-    await checkoutPage.checkoutAsGuest();
+  // Step 10: Checkout as Guest
+  await checkoutPage.checkoutAsGuest();
 
-    // Step 11: Fill Billing Address
-    await checkoutPage.fillBillingAddress();
+  // Step 11: Fill Billing Address
+  await checkoutPage.fillBillingAddress();
 
-    // Step 12: Continue Billing Address
-    await checkoutPage.continueBillingAddress();
+  // Step 12: Continue Billing Address
+  await checkoutPage.continueBillingAddress();
 
-    // Step 13: Continue from Shipping Address
-    await checkoutPage.continueShippingAddress();
+  // Step 13: Continue from Shipping Address
+  await checkoutPage.continueShippingAddress();
 
-    // Step 14: Select Ground Shipping and Continue
-    await checkoutPage.continueShippingMethod();
+  // Step 14: Select Ground Shipping and Continue
+  await checkoutPage.continueShippingMethod();
 
-    // Step 15: Select Cash On Delivery and Continue
-    await checkoutPage.continuePaymentMethod();
+  // Step 15: Select Cash On Delivery and Continue
+  await checkoutPage.continuePaymentMethod();
 
-    // Step 16: Continue from Payment Information
-    await checkoutPage.continuePaymentInformation();
+  // Step 16: Continue from Payment Information
+  await checkoutPage.continuePaymentInformation();
 
-    // Step 17: Confirm Order
-    await checkoutPage.confirmOrder();
+  // Step 17: Confirm Order
+  await checkoutPage.confirmOrder();
 
-    // Step 18: Verify Order Confirmation
-    await expect(page.getByText(
+  // Step 18: Verify Order Confirmation
+  await expect(page.getByText(
     'Your order has been successfully processed!'
-    )).toBeVisible();
+  )).toBeVisible();
 
-    // Step 19: Get Dynamic Order Number
-    const orderDetailsHref =
+  // Step 19: Get Dynamic Order Number
+  const orderDetailsHref =
     await checkoutPage.orderDetailsLink.getAttribute('href');
 
-    const orderNumber = orderDetailsHref.match(/\/orderdetails\/(\d+)/)[1];
+  const orderNumber = orderDetailsHref.match(/orderdetails\/(\d+)/)[1];
 
-    console.log('Order Number:', orderNumber);
+  console.log('Order Number:', orderNumber);
 
-    // Step 20: Open Order Details
-    await checkoutPage.openOrderDetails();
+  // Step 20: Open Order Details
+  await checkoutPage.openOrderDetails();
 
-    // Step 21: Verify Order Details Page
-    await expect(page).toHaveURL(
+  // Step 21: Verify Order Details Page
+  await expect(page).toHaveURL(
     new RegExp(`/orderdetails/${orderNumber}`)
-    );
+  );
 
-    await expect(page.locator('body')).toContainText(orderNumber);
-    await expect(page.locator('body')).toContainText('Simple Computer');
+  await expect(page.locator('body')).toContainText(orderNumber);
+  await expect(page.locator('body')).toContainText('Simple Computer');
 
-    // Step 22: Verify Product Quantity
-    const productQuantity = page.locator('td.quantity');
+  // Step 22: Verify Product Quantity
+  const productQuantity = page.locator('td.quantity');
 
-    await expect(productQuantity).toHaveText(/Quantity:\s*2/);
+  await expect(productQuantity).toHaveText(/Quantity:\s*2/);
+
+  // Attach screenshot to Playwright and Allure reports
+  await testInfo.attach('Q3 - Product Search and Checkout Screenshot', {
+    body: await page.screenshot({ fullPage: true }),
+    contentType: 'image/png'
+  });
+
 });
